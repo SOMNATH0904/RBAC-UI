@@ -1,3 +1,5 @@
+/* src/App.css */
+
 .App {
   text-align: center;
   background-color: #f4f6f8;
@@ -7,23 +9,6 @@
   justify-content: center;
   align-items: center;
   font-family: 'Inter', Arial, sans-serif;
-}
-
-.App-header {
-  background-color: #1a73e8;
-  color: white;
-  width: 100%;
-  padding: 20px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.App-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 0;
 }
 
 .App-logo {
@@ -77,18 +62,91 @@ button:disabled {
   }
 }
 
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.MuiDialog-paper {
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  background-color: #ffffff;
+}
+
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: all 0.3s ease;
+}
+
+.MuiButton-root:hover {
+  background-color: #145db2;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.MuiAutocomplete-root {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.MuiAutocomplete-popupIndicator {
+  color: #1976d2;
+  transition: color 0.3s ease;
+}
+
+.MuiAutocomplete-popupIndicator:hover {
+  color: #145db2;
+}
+
+.MuiDialogActions-root {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+::selection {
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
-  .App-header {
-    flex-direction: column;
-    text-align: center;
+  body {
+    font-size: 16px;
   }
 
-  .App-title {
-    font-size: 1.5rem;
+  .MuiDialog-paper {
+    padding: 16px;
   }
 
-  button {
-    width: 100%;
-    max-width: 300px;
+  .MuiButton-root {
+    padding: 8px 12px;
+    font-size: 14px;
   }
 }

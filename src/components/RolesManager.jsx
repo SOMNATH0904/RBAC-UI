@@ -1,85 +1,77 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import AddRoleModal from './AddRoleModal';
 
 const RolesManager = () => {
-  const [open, setOpen] = useState(false);
-  const [editRole, setEditRole] = useState(null);
   const [roles, setRoles] = useState([
-    {
-      id: 1,
-      name: 'Admin',
-      permissions: ['Read', 'Write', 'Execute'],
-      actions: ['Create', 'Update', 'Delete'],
-    },
-    {
-      id: 2,
-      name: 'User',
-      permissions: ['Read'],
-      actions: ['View'],
-    },
+    { id: 1, name: 'Admin', permissions: 'All Access' },
+    { id: 2, name: 'User', permissions: 'Limited Access' },
   ]);
+  const [open, setOpen] = useState(false);
+  const [currentRole, setCurrentRole] = useState(null);
 
-  // Handle adding a new role
-  const addRole = (name, permissions, actions) => {
-    const newRole = {
-      id: roles.length + 1, // Ensure unique ID
-      name,
-      permissions,
-      actions,
-    };
-    setRoles([...roles, newRole]);
+  const handleOpen = (role = null) => {
+    setCurrentRole(role || { name: '', permissions: '' });
+    setOpen(true);
   };
 
-  // Handle editing a role
-  const handleEdit = (role) => {
-    setEditRole(role); // Set the role to be edited
-    setOpen(true); // Open the modal
+  const handleSave = () => {
+    if (currentRole.id) {
+      // Update existing role
+      setRoles((prevRoles) =>
+        prevRoles.map((role) => (role.id === currentRole.id ? currentRole : role))
+      );
+    } else {
+      // Add new role
+      setRoles((prevRoles) => [...prevRoles, { ...currentRole, id: Date.now() }]);
+    }
+    setOpen(false);
   };
 
-  // Handle deleting a role
   const handleDelete = (id) => {
-    setRoles(roles.filter((role) => role.id !== id));
-  };
-
-  // Function to update role in the roles state
-  const updateRole = (updatedRole) => {
-    const updatedRoles = roles.map((role) =>
-      role.id === updatedRole.id ? updatedRole : role
-    );
-    setRoles(updatedRoles);
+    setRoles((prevRoles) => prevRoles.filter((role) => role.id !== id));
   };
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+      <Button variant="contained" color="primary" onClick={() => handleOpen()} sx={{ mb: 2 }}>
         Add Role
       </Button>
-
-      {/* Roles Table */}
-      <TableContainer component={Paper} sx={{ mt: 3 }}>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Role Name</TableCell>
-              <TableCell>Permissions</TableCell>
-              <TableCell>Actions</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell><strong>Name</strong></TableCell>
+              <TableCell><strong>Permissions</strong></TableCell>
+              <TableCell><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {roles.map((role) => (
               <TableRow key={role.id}>
                 <TableCell>{role.name}</TableCell>
-                <TableCell>{role.permissions.join(', ')}</TableCell>
-                <TableCell>{role.actions.join(', ')}</TableCell>
+                <TableCell>{role.permissions}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEdit(role)}>
-                    <Edit />
+                  <IconButton onClick={() => handleOpen(role)}>
+                    <Edit color="primary" />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(role.id)}>
-                    <Delete />
+                    <Delete color="error" />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -88,15 +80,33 @@ const RolesManager = () => {
         </Table>
       </TableContainer>
 
-      {/* Add/Edit Role Modal */}
-      <AddRoleModal
-        open={open}
-        setOpen={setOpen}
-        addRole={addRole}
-        editRole={editRole}
-        setEditRole={setEditRole}
-        updateRole={updateRole} // Pass updateRole function to modal
-      />
+      {/* Add/Edit Role Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+        <DialogTitle>{currentRole?.id ? 'Edit Role' : 'Add Role'}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            value={currentRole?.name || ''}
+            onChange={(e) => setCurrentRole({ ...currentRole, name: e.target.value })}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Permissions"
+            value={currentRole?.permissions || ''}
+            onChange={(e) => setCurrentRole({ ...currentRole, permissions: e.target.value })}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary" variant="contained">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
